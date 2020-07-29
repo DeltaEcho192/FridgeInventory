@@ -1,0 +1,9 @@
+bASIC START TO PROJECT
+
+New GCP project
+Design the data storage on firestore. (Use correct modelling technique to reduce costs)
+Firebase Auth system with Firestore
+Link web app with firestore and make simple request
+Build basic Login and Table to show data
+Simple site to add items
+Search system to check for items already entered and using those instead
