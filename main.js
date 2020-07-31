@@ -1,4 +1,5 @@
 
+var table;
 var firebaseConfig = {
     apiKey: "AIzaSyAKvgDW_qfVYt-2lxY5vvwbPowiwbwxq28",
     authDomain: "fridge-inv.firebaseapp.com",
@@ -42,6 +43,21 @@ document.querySelector('#sign-out').addEventListener('click', function (e) {
 function checkUser() {
     var auth = firebase.auth().currentUser;
     console.log(auth.uid)
+    var tableData = []
+    table = new Tabulator("#example-table", {
+        height: 300, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+        data: tableData, //assign data to table
+        layout: "fitColumns", //fit columns to width of table (optional)
+        columns: [ //Define Table Columns
+            { title: "Name", field: "Name", width: 150 },
+            { title: "Total", field: "Total" },
+            { title: "Price Total", field: "Calc" },
+
+        ],
+        rowClick: function (e, row) { //trigger an alert message when the row is clicked
+            row.toggleSelect();
+        },
+    });
 
     db.collection("Products").where("userID", "==", auth.uid)
         .get()
@@ -52,6 +68,9 @@ function checkUser() {
                 var data = doc.data()
                 console.log(data.Name)
                 console.log(data.Total)
+                var calculation = data.Price * data.Total
+                console.log(calculation)
+                table.addData([{ "Name": data.Name, "Total": data.Total, "Calc": calculation }])
             });
         })
         .catch(function (error) {
