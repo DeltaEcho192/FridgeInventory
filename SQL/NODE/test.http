@@ -1,0 +1,4 @@
+GET http://localhost:9000/check/123456789
+
+###
+GET http://localhost:9000/test/

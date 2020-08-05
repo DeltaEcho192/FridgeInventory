@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <title>Frige Inventory</title>
+    <link href="https://unpkg.com/tabulator-tables@4.7.2/dist/css/tabulator.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <form>
+        <div>
+            <input id="email" type="text" placeholder="Email...">
+        </div>
+        <div>
+            <input id="password" type="password" placeholder="Password...">
+        </div>
+        <div>
+            <button id="sign-in">Sign In</button>
+            <button id="sign-out">Sign Out</button>
+        </div>
+    </form>
+
+    <button onclick="checkUser()">Check User</button>
+
+    <div class="main_page">
+        <div id="example-table"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.7.2/dist/js/tabulator.min.js"></script>
+    <script src="main.js"></script>
+
+</body>
+
+</html>
