@@ -64,8 +64,7 @@ app.get("/check/:bar", (req, res) => {
         password: 'xxmaster',
         database: 'fridgeInv'
     })
-    console.log("checking")
-    res.send("Testing")
+
     var barcodeCheck = "SELECT * FROM product WHERE barcode = " + req.params.bar + ";";
     database.query(barcodeCheck).then(rows => {
         if (rows.length > 0) {
@@ -77,12 +76,34 @@ app.get("/check/:bar", (req, res) => {
     })
 })
 
-function check(rows) {
-    if (rows.length > 0) {
+app.get("/total/:bar/:userid", (req, res) => {
+    var barcode = req.params.bar;
+    var userid = req.params.userid;
 
-    }
+    database = new Database({
+        host: 'localhost',
+        user: 'root',
+        password: 'xxmaster',
+        database: 'fridgeInv'
+    })
 
-}
+    var sqlQuery = "SELECT Count(barcode) AS total FROM main WHERE userID = " + userid + " AND barcode= " + barcode + " AND entryTime BETWEEN '2020-08-01' AND '2020-08-31';"
+    database.query(sqlQuery).then(rows => res.send(rows))
+})
+
+app.get("/all/:userid", (req, res) => {
+    var userid = req.params.userid;
+
+    database = new Database({
+        host: 'localhost',
+        user: 'root',
+        password: 'xxmaster',
+        database: 'fridgeInv'
+    })
+
+    var sqlQuery = "SELECT main.entryTime, product.pName,product.price, main.barcode FROM main INNER JOIN product ON main.barcode=product.barcode WHERE main.userID = " + userid + ";";
+    database.query(sqlQuery).then(rows => res.send(rows))
+})
 app.get("/test/", (req, res) => {
     res.send("Being testing")
 })

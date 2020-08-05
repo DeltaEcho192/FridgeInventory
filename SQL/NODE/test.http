@@ -1,4 +1,12 @@
+
+### Barcode Check
 GET http://localhost:9000/check/123456789
 
-###
+### User total
+Get http://localhost:9000/total/123456789/98765
+
+### User all items
+Get http://localhost:9000/all/12345
+
+### Test
 GET http://localhost:9000/test/
