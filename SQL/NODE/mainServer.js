@@ -24,8 +24,8 @@ app.use((req, res, next) => {
     next();
 });
 
-
-var connection = mysql.createConnection({
+var pool = mysql.createPool({
+    connectionLimit: 100,
     host: 'localhost',
     user: 'root',
     password: 'xxmaster',
@@ -58,51 +58,113 @@ class Database {
 }
 
 app.get("/check/:bar", (req, res) => {
-    database = new Database({
-        host: 'localhost',
-        user: 'root',
-        password: 'xxmaster',
-        database: 'fridgeInv'
-    })
-
     var barcodeCheck = "SELECT * FROM product WHERE barcode = " + req.params.bar + ";";
-    database.query(barcodeCheck).then(rows => {
-        if (rows.length > 0) {
-            console.log("This product exists")
-        }
-        else {
-            console.log("This product does not exist")
-        }
-    })
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+
+
+        connection.query(barcodeCheck, function (error, results, fields) {
+            if (results.length > 0) {
+                console.log("This product exists")
+                res.send("It worked")
+            }
+            else {
+                console.log("This product does not exist")
+            }
+            connection.release();
+
+            if (error) throw error;
+        });
+    });
 })
 
 app.get("/total/:bar/:userid", (req, res) => {
     var barcode = req.params.bar;
     var userid = req.params.userid;
 
-    database = new Database({
-        host: 'localhost',
-        user: 'root',
-        password: 'xxmaster',
-        database: 'fridgeInv'
-    })
+    var sqlQuery = "SELECT Count(barcode) AS total FROM main WHERE userID = '" + userid + "' AND barcode= " + barcode + " AND entryTime BETWEEN '2020-08-01' AND '2020-08-31';"
 
-    var sqlQuery = "SELECT Count(barcode) AS total FROM main WHERE userID = " + userid + " AND barcode= " + barcode + " AND entryTime BETWEEN '2020-08-01' AND '2020-08-31';"
-    database.query(sqlQuery).then(rows => res.send(rows))
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
+
+        connection.query(sqlQuery, function (error, results, fields) {
+            res.send(results)
+            connection.release();
+
+            if (error) throw error;
+        });
+    });
 })
 
 app.get("/all/:userid", (req, res) => {
     var userid = req.params.userid;
 
-    database = new Database({
-        host: 'localhost',
-        user: 'root',
-        password: 'xxmaster',
-        database: 'fridgeInv'
-    })
+    var sqlQuery = "SELECT main.entryTime, product.pName,product.price, main.barcode FROM main INNER JOIN product ON main.barcode=product.barcode WHERE main.userID = '" + userid + "';";
+    pool.getConnection(function (err, connection) {
+        if (err) throw err;
 
-    var sqlQuery = "SELECT main.entryTime, product.pName,product.price, main.barcode FROM main INNER JOIN product ON main.barcode=product.barcode WHERE main.userID = " + userid + ";";
-    database.query(sqlQuery).then(rows => res.send(rows))
+        connection.query(sqlQuery, function (error, results, fields) {
+            res.send(results)
+            connection.release();
+
+            if (error) throw error;
+        });
+    });
+})
+app.post('/entry', function (req, res) {
+    console.log("receiving data...");
+    console.log("body is ", req.body);
+    var userData = req.body
+    if (userData.check == false) {
+        var userid = userData.userid
+        console.log(userid)
+        var barcode = userData.barcode
+        var date = userData.date
+        var sqlInsert = "INSERT INTO main VALUES ('" + userid + "'," + barcode + ",'" + date + "');"
+        pool.getConnection(function (err, connection) {
+            if (err) throw err;
+
+            connection.query(sqlInsert, function (error, results, fields) {
+                console.log(results)
+                res.send("Working")
+                connection.release();
+
+                if (error) throw error;
+            });
+        });
+    }
+    else {
+        var userid = userData.userid
+        var barcode = userData.barcode
+        var date = userData.date
+        var name = userData.name
+        var price = userData.price
+
+        var sqlInsertProduct = "INSERT INTO product VALUES (" + barcode + ",'" + name + "','" + price + "');"
+        var sqlInsertMain = "INSERT INTO main VALUES ('" + userid + "'," + barcode + ",'" + date + "');";
+
+        pool.getConnection(function (err, connection) {
+            if (err) throw err;
+
+            connection.query(sqlInsertProduct, function (error, results, fields) {
+                console.log(results)
+
+                if (error) throw error;
+            });
+
+
+            connection.query(sqlInsertMain, function (error, results, fields) {
+                console.log(results)
+                res.send("Working")
+                connection.release();
+
+                if (error) throw error;
+            });
+
+
+        });
+    }
+
 })
 app.get("/test/", (req, res) => {
     res.send("Being testing")

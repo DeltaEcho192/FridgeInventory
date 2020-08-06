@@ -2,3 +2,11 @@ bASIC START TO PROJECT
 
 Simple site to add items
 Search system to check for items already entered and using those instead
+
+Extended
+
+API building
+Add logic for adding a new product while checking if it already exists if it does then route through a different tree
+
+Build website to handel basic selects
+Build site to handle input of products

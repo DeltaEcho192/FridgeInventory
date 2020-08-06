@@ -8,5 +8,31 @@ Get http://localhost:9000/total/123456789/98765
 ### User all items
 Get http://localhost:9000/all/12345
 
+### Post for new entry
+POST http://localhost:9000/entry
+Content-Type: application/json
+
+{
+    "check" : false,
+    "userid" : "12345",
+    "barcode" : "123456789",
+    "date" : "2020-08-06"
+
+}
+
+### Post for new entry without product being in database
+POST http://localhost:9000/entry
+Content-Type: application/json
+
+{
+    "check" : true,
+    "userid" : "12345",
+    "barcode" : "987651234",
+    "date" : "2020-08-06",
+    "name" : "Strawberry Jam",
+    "price" : "32.00"
+
+}
+
 ### Test
 GET http://localhost:9000/test/
