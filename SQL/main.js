@@ -44,4 +44,29 @@ function checkUser() {
     var auth = firebase.auth().currentUser;
     console.log(auth.uid)
 
+    var url = "http://localhost:9000/all/12345"
+    fetch(url)
+        .then(response => response.json())
+        .then(json => {
+            console.log(json)
+            table(json)
+        });
+
+}
+function table(tableData) {
+    var table = new Tabulator("#example-table", {
+        height: 300,
+        data: tableData,
+        layout: "fitColumns",
+        columns: [
+            { title: "Name", field: "pName", },
+            { title: "Price", field: "price" },
+            { title: "Barcode", field: "barcode" },
+            { title: "Total", field: "total" },
+            { title: "Entry Time", field: "entryTime" },
+        ],
+        rowClick: function (e, row) {
+            row.toggleSelect();
+        },
+    });
 }

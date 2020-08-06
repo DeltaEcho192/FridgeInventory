@@ -8,5 +8,5 @@ Extended
 API building
 Add logic for adding a new product while checking if it already exists if it does then route through a different tree
 
-Build website to handel basic selects
+Build website to handel basic selects#Complete just make pretty
 Build site to handle input of products

@@ -99,7 +99,7 @@ app.get("/total/:bar/:userid", (req, res) => {
 app.get("/all/:userid", (req, res) => {
     var userid = req.params.userid;
 
-    var sqlQuery = "SELECT main.entryTime, product.pName,product.price, main.barcode FROM main INNER JOIN product ON main.barcode=product.barcode WHERE main.userID = '" + userid + "';";
+    var sqlQuery = "SELECT main.entryTime, product.pName,product.price, main.barcode, Count(main.barcode) AS total FROM main INNER JOIN product ON main.barcode=product.barcode WHERE main.userID = '" + userid + "' group by main.barcode;";
     pool.getConnection(function (err, connection) {
         if (err) throw err;
 
@@ -167,7 +167,7 @@ app.post('/entry', function (req, res) {
 
 })
 app.get("/test/", (req, res) => {
-    res.send("Being testing")
+    res.send("Being tested")
 })
 
 const PORT = process.env.PORT || 9000;
