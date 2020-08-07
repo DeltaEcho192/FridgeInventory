@@ -8,15 +8,14 @@ var cors = require('cors')
 var path = require('path');
 var mysql = require('mysql');
 var session = require('express-session');
-const { response } = require("express");
-const { Console } = require("console");
+
 
 
 const app = express();
 
 app.options('*', cors())
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use((req, res, next) => {
@@ -66,10 +65,11 @@ app.get("/check/:bar", (req, res) => {
         connection.query(barcodeCheck, function (error, results, fields) {
             if (results.length > 0) {
                 console.log("This product exists")
-                res.send("It worked")
+                res.send(true)
             }
             else {
                 console.log("This product does not exist")
+                res.send(false)
             }
             connection.release();
 
@@ -121,12 +121,13 @@ app.post('/entry', function (req, res) {
         var barcode = userData.barcode
         var date = userData.date
         var sqlInsert = "INSERT INTO main VALUES ('" + userid + "'," + barcode + ",'" + date + "');"
+        console.log(sqlInsert)
         pool.getConnection(function (err, connection) {
             if (err) throw err;
 
             connection.query(sqlInsert, function (error, results, fields) {
                 console.log(results)
-                res.send("Working")
+                res.status(201)
                 connection.release();
 
                 if (error) throw error;

@@ -44,7 +44,7 @@ function checkUser() {
     var auth = firebase.auth().currentUser;
     console.log(auth.uid)
 
-    var url = "http://localhost:9000/all/12345"
+    var url = "http://localhost:9000/all/" + auth.uid
     fetch(url)
         .then(response => response.json())
         .then(json => {
@@ -69,4 +69,53 @@ function table(tableData) {
             row.toggleSelect();
         },
     });
+}
+
+function check() {
+
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+            var barcode = document.getElementById("Barcode").value
+            console.log(barcode)
+            var url = "http://localhost:9000/check/" + barcode;
+            fetch(url).then(response => {
+                response.text().then(function (text) {
+                    console.log(text)
+                    if (text == 'true') {
+                        var auth = firebase.auth().currentUser;
+                        console.log(auth.uid)
+                        var date = new Date();
+                        var newDate = date.toISOString().slice(0, 19).replace('T', ' ');
+                        postData('http://localhost:9000/entry', {
+                            check: false,
+                            userid: auth.uid,
+                            barcode: barcode,
+                            date: newDate
+
+                        })
+                            .then(data => {
+                                console.log(data); // JSON data parsed by `data.json()` call
+                            });
+
+                    }
+                })
+            })
+        } else {
+            // No user is signed in.
+        }
+    });
+}
+
+async function postData(url = '', data = {}) {
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    return response.status;
 }
