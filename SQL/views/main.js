@@ -94,8 +94,46 @@ function check() {
 
                         })
                             .then(data => {
-                                console.log(data); // JSON data parsed by `data.json()` call
+                                console.log(data);
+                                checkUser()
                             });
+
+                    }
+                    if (text == 'false') {
+                        if (document.getElementById("name").disabled == false) {
+                            var nameI = document.getElementById("name").value;
+                            var priceI = document.getElementById("price").value;
+                            console.log(nameI)
+                            console.log(priceI)
+                            var auth = firebase.auth().currentUser;
+                            console.log(auth.uid)
+                            var date = new Date();
+                            var newDate = date.toISOString().slice(0, 19).replace('T', ' ');
+                            postData('http://localhost:9000/entry', {
+                                check: true,
+                                userid: auth.uid,
+                                barcode: barcode,
+                                date: newDate,
+                                name: nameI,
+                                price: priceI
+
+                            })
+                                .then(data => {
+                                    console.log(data);
+                                    checkUser()
+                                    document.getElementById("name").disabled = true;
+                                    document.getElementById("price").disabled = true;
+                                    document.getElementById("name").value = "";
+                                    document.getElementById("price").value = "";
+
+                                });
+                        }
+                        else {
+                            console.log("Havent Checked barcode yet")
+                            document.getElementById("name").disabled = false;
+                            document.getElementById("price").disabled = false;
+                            console.log("Please enter values")
+                        }
 
                     }
                 })
@@ -106,6 +144,17 @@ function check() {
     });
 }
 
+function enterProduct() {
+    if (document.getElementById("name").disabled == false) {
+        var name = document.getElementById("name").value;
+        var price = document.getElementById("price").value;
+        console.log(name)
+        console.log(price)
+    }
+    else {
+        console.log("Havent Checked barcode yet")
+    }
+}
 async function postData(url = '', data = {}) {
     const response = await fetch(url, {
         method: 'POST',

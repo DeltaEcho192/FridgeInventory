@@ -3,7 +3,7 @@ USE fridgeInv;
 CREATE TABLE main (
 userid VARCHAR(255),
 barcode int,
-entryTime date);
+entryTime datetime);
 
 CREATE TABLE product (
 barcode int,

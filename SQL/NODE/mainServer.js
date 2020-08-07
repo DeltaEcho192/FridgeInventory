@@ -7,7 +7,6 @@ const getJSON = bent('json')
 var cors = require('cors')
 var path = require('path');
 var mysql = require('mysql');
-var session = require('express-session');
 
 
 
@@ -25,7 +24,7 @@ app.use((req, res, next) => {
 
 var pool = mysql.createPool({
     connectionLimit: 100,
-    host: 'localhost',
+    host: 'db',
     user: 'root',
     password: 'xxmaster',
     database: 'fridgeInv'
