@@ -3,28 +3,29 @@
 <head>
     <title>Frige Inventory</title>
     <link href="https://unpkg.com/tabulator-tables@4.7.2/dist/css/tabulator.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
-    <form>
-        <div>
-            <input id="email" type="text" placeholder="Email...">
+    <div class="headerwrapper">
+        <div class="headerLabel">
+            <h2 id="mainLabel">Fridge Inventory</h2>
+            <button id="checkUser" onclick="checkUser()">Check User</button>
         </div>
-        <div>
-            <input id="password" type="password" placeholder="Password...">
+        <div class="headerSignin">
+            <input class="inputs" id="email" type="text" placeholder="Email...">
+            <input class="inputs" id="password" type="password" placeholder="Password...">
+            <button class="inputs" id="sign-in">Sign In</button>
+            <button class="inputs" id="sign-out">Sign Out</button>
         </div>
-        <div>
-            <button id="sign-in">Sign In</button>
-            <button id="sign-out">Sign Out</button>
-        </div>
-    </form>
-    <button onclick="checkUser()">Check User</button>
+    </div>
+
     <div class="insert_wrapper">
         <div class="mainInsert">
-            <input type="text" id="Barcode" placeholder="Barcode">
-            <input id="name" placeholder="Name" disabled="true">
-            <input id="price" placeholder="Price" disabled="true">
-            <button onclick="check()">Enter Record</button>
+            <input type="text" id="Barcode" placeholder="Barcode" class="userInput">
+            <input id="name" placeholder="Name" disabled="true" class="userInput">
+            <input id="price" placeholder="Price" disabled="true" class="userInput">
+            <button onclick="check()" class="userInput">Enter Record</button>
         </div>
     </div>
     <div class="main_page">
