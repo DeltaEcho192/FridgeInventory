@@ -29,6 +29,7 @@ document.querySelector('#sign-in').addEventListener('click', function (e) {
         var errorMessage = error.message;
         console.log(errorCode)
         console.log(errorMessage)
+        alert(errorMessage)
         // ...
     });
 
@@ -50,7 +51,7 @@ function checkUser() {
         .then(json => {
             console.log(json)
             table(json)
-        });
+        }).catch(error => alert(error));
 
 }
 function table(tableData) {
@@ -92,11 +93,13 @@ function check() {
                             barcode: barcode,
                             date: newDate
 
-                        })
-                            .then(data => {
+                        }).then(data => {
+                            if (data == 200) {
                                 console.log(data);
                                 checkUser()
-                            });
+                            }
+
+                        }).catch(error => alert(error));
 
                     }
                     if (text == 'false') {
@@ -120,16 +123,21 @@ function check() {
                             })
                                 .then(data => {
                                     console.log(data);
-                                    checkUser()
-                                    document.getElementById("name").disabled = true;
-                                    document.getElementById("price").disabled = true;
-                                    document.getElementById("name").value = "";
-                                    document.getElementById("price").value = "";
+                                    if (data == 200) {
+                                        checkUser()
+                                        document.getElementById("name").disabled = true;
+                                        document.getElementById("price").disabled = true;
+                                        document.getElementById("name").value = "";
+                                        document.getElementById("price").value = "";
+                                        alert("The input was successful")
+                                    }
 
-                                });
+
+                                }).catch(error => alert(error));
                         }
                         else {
                             console.log("Havent Checked barcode yet")
+                            alert("That barcode does not exist please Enter values")
                             document.getElementById("name").disabled = false;
                             document.getElementById("price").disabled = false;
                             console.log("Please enter values")

@@ -1,2 +1,13 @@
-Make UI Pretty
 Dockerize and kubernettes
+Add functionallity for weighed items
+Make sure user is logged in
+Write python scripts for data visulisations
+{
+    Top 5 barcodes with most spent on.
+    Top 5 Most bought barcodes
+    Total Amount spent in month
+    Total Amount spent through year
+    Graph with total spent from each month
+    Total Amount of items bought
+    Single largest expense
+}
