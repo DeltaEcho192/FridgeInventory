@@ -22,7 +22,7 @@ WHERE mainTesting.entryTime BETWEEN '2020-08-01' AND '2020-08-31' AND mainTestin
 group by productTesting.price;
 
 /*Total Amount of items bought*/
-SElECT COUNT(mainTesting.barcode) AS "Total Items" FROM mainTesting WHERE mainTesting.userid="aF63z0R0jlQR7sfOgBAgOCOsQgv1";
+SElECT COUNT(mainTesting.barcode) AS "Total Items" FROM mainTesting WHERE mainTesting.entryTime BETWEEN '2020-08-01' AND '2020-08-31' AND mainTesting.userid="aF63z0R0jlQR7sfOgBAgOCOsQgv1";
 
 /*Single largest expense*/
 SELECT productTesting.pName, productTesting.price
