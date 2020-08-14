@@ -1,5 +1,5 @@
 USE fridgeInv;
-INSERT INTO main VALUES ('aF63z0R0jlQR7sfOgBAgOCOsQgv1',987654321,'2020-08-07T10:18:26.438Z');
+INSERT INTO mainTesting VALUES ('aF63z0R0jlQR7sfOgBAgOCOsQgv1',8710900033580,'2020-12-11');
 SELECT * FROM mainTesting;
 
 SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode), productTesting.price * Count(mainTesting.barcode) AS Total 

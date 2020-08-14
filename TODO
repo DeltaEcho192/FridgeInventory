@@ -10,4 +10,6 @@ Write python scripts for data visulisations
     Graph with total spent from each month (Make multiple requests changing time) Y
     Total Amount of items bought Y
     Single largest expense Y
+    Percentage of top 3 cost from total months spending
 }
+Add userid to products database to reduce chaos
