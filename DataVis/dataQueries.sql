@@ -6,9 +6,9 @@ SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode), pro
 FROM mainTesting INNER JOIN productTesting ON mainTesting.barcode=productTesting.barcode group by mainTesting.barcode;
 
 /*Top 5 barcodes with most spent on*/
-SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode),productTesting.price * Count(mainTesting.barcode) AS Total 
-FROM mainTesting INNER JOIN productTesting ON mainTesting.barcode=productTesting.barcode 
-group by mainTesting.barcode ORDER by Total desc limit 3;
+SELECT mainTesting.entryTime,productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode),productTesting.price * Count(mainTesting.barcode) AS Total 
+FROM mainTesting INNER JOIN productTesting ON mainTesting.barcode=productTesting.barcode WHERE mainTesting.entryTime between "2020-09-01" AND "2020-09-31"
+group by mainTesting.barcode ORDER by Total desc limit 3 ;
 
 /*Top 5 Most bought barcodes*/
 SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode) AS Total

@@ -1,15 +1,4 @@
 Dockerize and kubernettes
 Add functionallity for weighed items
 Make sure user is logged in
-Write python scripts for data visulisations
-{
-    Top 5 barcodes with most spent on. Y
-    Top 5 Most bought barcodes Y
-    Total Amount spent in month Y
-    Total Amount spent through year Y
-    Graph with total spent from each month (Make multiple requests changing time) Y
-    Total Amount of items bought Y
-    Single largest expense Y
-    Percentage of top 3 cost from total months spending
-}
 Add userid to products database to reduce chaos

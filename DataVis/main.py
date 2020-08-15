@@ -3,7 +3,6 @@ from tabulate import tabulate
 import matplotlib.pyplot as plt
 import numpy as np
 
-#TODO Add month select function
 #TODO Add firebase login to get username
 
 mydb = mysql.connector.connect(
@@ -16,10 +15,10 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 
 
-def mostSpent ():
+def mostSpent(startMonth,endMonth):
   data = []
   total = []
-  mycursor.execute("SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode),productTesting.price * Count(mainTesting.barcode) AS Total FROM mainTesting INNER JOIN productTesting ON mainTesting.barcode=productTesting.barcode group by mainTesting.barcode ORDER by Total desc limit 3;")
+  mycursor.execute("SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode),productTesting.price * Count(mainTesting.barcode) AS Total FROM mainTesting INNER JOIN productTesting ON mainTesting.barcode=productTesting.barcode WHERE mainTesting.entryTime between '"+str(startMonth)+"' AND '"+str(endMonth)+"' group by mainTesting.barcode ORDER by Total desc limit 3;")
   myresult = mycursor.fetchall()
 
   for x in myresult:
@@ -30,9 +29,9 @@ def mostSpent ():
   print(tabulate(data))
   return top3
 
-def mostBought():
+def mostBought(startMonth,endMonth):
     data = []
-    mycursor.execute("SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode) AS Total FROM mainTesting INNER JOIN productTesting ON mainTesting.barcode=productTesting.barcode group by mainTesting.barcode ORDER by Total desc limit 3;")
+    mycursor.execute("SELECT productTesting.pName,mainTesting.barcode, Count(mainTesting.barcode) AS Total FROM mainTesting INNER JOIN productTesting ON mainTesting.barcode=productTesting.barcode WHERE mainTesting.entryTime between '"+str(startMonth)+"' AND '"+str(endMonth)+"' group by mainTesting.barcode ORDER by Total desc limit 3;")
     myresult = mycursor.fetchall()
 
     for x in myresult:
@@ -52,7 +51,7 @@ def totalSpend(startMonth,endMonth):
 
 def totalProducts(startMonth, endMonth):
     data = []
-    mycursor.execute("SElECT COUNT(mainTesting.barcode) AS 'Total Items' FROM mainTesting WHERE mainTesting.entryTime BETWEEN '2020-08-01' AND '2020-08-31' AND mainTesting.userid='aF63z0R0jlQR7sfOgBAgOCOsQgv1';")
+    mycursor.execute("SElECT COUNT(mainTesting.barcode) AS 'Total Items' FROM mainTesting WHERE mainTesting.entryTime BETWEEN '"+str(startMonth)+"' AND '"+str(endMonth)+"' AND mainTesting.userid='aF63z0R0jlQR7sfOgBAgOCOsQgv1';")
     myresult = mycursor.fetchall()
 
     for x in myresult:
@@ -60,7 +59,7 @@ def totalProducts(startMonth, endMonth):
     print("Total Amount spent in Month: ", data[0])
 
 def mostExp(startMonth,endMonth):
-    mycursor.execute("SELECT productTesting.pName, productTesting.price FROM mainTesting JOIN productTesting ON mainTesting.barcode=productTesting.barcode group by mainTesting.barcode ORDER by productTesting.price desc limit 1;")
+    mycursor.execute("SELECT productTesting.pName, productTesting.price FROM mainTesting JOIN productTesting ON mainTesting.barcode=productTesting.barcode WHERE mainTesting.entryTime between '"+str(startMonth)+"' AND '"+str(endMonth)+"' group by mainTesting.barcode ORDER by productTesting.price desc limit 1;")
     myresult = mycursor.fetchall()
 
     for x in myresult:
@@ -93,29 +92,45 @@ def monthToM():
     monthArrS.append(startDate)
     monthArrE.append(endDate)
     i = i + 1
-  print(monthArrS)
-  print(monthArrE)
   x = 0
   totalArr = []
   while x < len(monthArrS):
     totalW = totalSpend(monthArrS[x],monthArrE[x])
     totalArr.append(totalW)
     x = x + 1 
-  print(totalArr)
   plt.bar(monthArrS,totalArr, color="blue")
   plt.title("Month To Month Spending")
   plt.xlabel("Months")
   plt.ylabel("Amount in Rands")
   plt.show()
 
+def dateConvert(entryMonth):
+  if(entryMonth > 9 and entryMonth < 13):
+    startDate = "2020-"+str(entryMonth)+"-01"
+  else:
+    startDate = "2020-0"+str(entryMonth)+"-01"
+  if(entryMonth > 9 and entryMonth < 13):
+    if (entryMonth % 2) == 0:  
+      endDate = "2020-"+str(entryMonth)+"-31"
+    else:
+      endDate = "2020-"+str(entryMonth)+"-30"
+  else:
+    if entryMonth in (1,3,5,7,8):
+      endDate = "2020-0"+str(entryMonth)+"-31"
+    elif entryMonth in (2,4,6,9):
+      endDate = "2020-0"+str(entryMonth)+"-30"
+  print(startDate)
+  print(endDate)
+  return [startDate,endDate]
 
+month = int(input("Please Enter a month (8 = August): "))
 
-
-top3 = mostSpent()
-mostBought()
-totalM = totalSpend("2020-08-01","2020-08-31")
-totalProducts(1,2)
-mostExp(1,2)
+dates = dateConvert(month)
+top3 = mostSpent(dates[0],dates[1])
+mostBought(dates[0],dates[1])
+totalM = totalSpend(dates[0],dates[1])
+totalProducts(dates[0],dates[1])
+mostExp(dates[0],dates[1])
 monthToM()
 
 percent = round((top3 / totalM) * 100,1)
