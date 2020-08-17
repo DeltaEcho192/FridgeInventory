@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #TODO Add firebase login to get username
+#Easy to convert in django api to query dynamically or using a website/app
 
 mydb = mysql.connector.connect(
   host="localhost",
