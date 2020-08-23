@@ -2,31 +2,30 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'Product.dart';
 import 'Total.dart';
 
 void main() => runApp(MyApp(
-      products: fetchProducts(),
+      total: fetchProducts(),
     ));
 
-List<Product> parseProducts(String responseBody) {
+List<Total> parseTotal(String responseBody) {
   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-  return parsed.map<Product>((json) => Product.fromJson(json)).toList();
+  return parsed.map<Total>((json) => Total.fromJson(json)).toList();
 }
 
-Future<List<Product>> fetchProducts() async {
-  final response =
-      await http.get('http://10.0.0.102:9000/all/aF63z0R0jlQR7sfOgBAgOCOsQgv1');
+Future<List<Total>> fetchProducts() async {
+  final response = await http.get('http://10.0.0.102:8000/testData.json');
   if (response.statusCode == 200) {
-    return parseProducts(response.body);
+    return parseTotal(response.body);
   } else {
     throw Exception("Unable to access Server.");
   }
 }
 
 class MyApp extends StatelessWidget {
-  final Future<List<Product>> products;
-  MyApp({Key key, this.products}) : super(key: key);
+  final String title;
+  final Future<List<Total>> total;
+  MyApp({Key key, this.title, this.total}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
       ),
       home: MyHomePage(
         title: 'Product Navigation demo home page',
-        products: products,
+        total: total,
       ),
     );
   }
@@ -46,10 +45,8 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatelessWidget {
   final String title;
-  final Future<List<Product>> products;
   final Future<List<Total>> total;
-  MyHomePage({Key key, this.title, this.products, this.total})
-      : super(key: key);
+  MyHomePage({Key key, this.title, this.total}) : super(key: key);
 
   // final items = Product.getProducts();
   @override
@@ -57,8 +54,8 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Product Navigation")),
       body: Center(
-        child: FutureBuilder<List<Product>>(
-          future: products,
+        child: FutureBuilder<List<Total>>(
+          future: total,
           builder: (context, snapshot) {
             if (snapshot.hasError) print(snapshot.error);
             return snapshot.hasData
@@ -69,20 +66,12 @@ class MyHomePage extends StatelessWidget {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => TotalPage()));
-        },
-        child: Icon(Icons.navigation),
-        backgroundColor: Colors.green,
-      ),
     );
   }
 }
 
 class ProductBoxList extends StatelessWidget {
-  final List<Product> items;
+  final List<Total> items;
   ProductBoxList({Key key, this.items});
 
   @override
@@ -108,12 +97,12 @@ class ProductBoxList extends StatelessWidget {
 
 class ProductPage extends StatelessWidget {
   ProductPage({Key key, this.item}) : super(key: key);
-  final Product item;
+  final Total item;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.item.pName),
+        title: Text(this.item.total.toString()),
       ),
       body: Center(
         child: Container(
@@ -128,10 +117,8 @@ class ProductPage extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Text(this.item.pName,
+                            Text(this.item.total.toString(),
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text("Price: " + this.item.price),
-                            Text("Barcode: " + this.item.barcode.toString()),
                           ],
                         )))
               ]),
@@ -143,7 +130,7 @@ class ProductPage extends StatelessWidget {
 
 class ProductBox extends StatelessWidget {
   ProductBox({Key key, this.item}) : super(key: key);
-  final Product item;
+  final Total item;
 
   Widget build(BuildContext context) {
     return Container(
@@ -159,53 +146,11 @@ class ProductBox extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Text(this.item.pName,
+                            Text(this.item.total.toString(),
                                 style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text("Price: " + this.item.price),
-                            Text("Barcode: " + this.item.barcode.toString()),
                           ],
                         )))
               ]),
         ));
-  }
-}
-
-List<Total> parseTotal(String responseBody) {
-  final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-  return parsed.map<Total>((json) => Total.fromJson(json)).toList();
-}
-
-Future<List<Total>> fetchTotal() async {
-  final response = await http.get('http://10.0.0.102:8000/testData.json');
-  if (response.statusCode == 200) {
-    return parseTotal(response.body);
-  } else {
-    throw Exception("Unable to access Server.");
-  }
-}
-
-class TotalPage extends StatelessWidget {
-  final String title;
-  final Future<List<Total>> total;
-
-  TotalPage({Key key, this.title, this.total}) : super(key: key);
-
-  // final items = Product.getProducts();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Product Navigation")),
-      body: Center(
-        child: FutureBuilder<List<Total>>(
-          future: total,
-          builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
-            return snapshot.hasData
-                ? Text(snapshot.data.toString())
-                : Text("Loading");
-          },
-        ),
-      ),
-    );
   }
 }

@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
 
 class Product {
-  final String name;
-  final String description;
-  final int price;
-  final String image;
+  final String pName;
+  final String price;
+  final int barcode;
+  final int total;
 
-  Product(this.name, this.description, this.price, this.image);
+  Product(this.pName, this.price, this.barcode, this.total);
   factory Product.fromJson(Map<String, dynamic> data) {
     return Product(
-      data['name'],
-      data['description'],
+      data['pName'],
       data['price'],
-      data['image'],
+      data['barcode'],
+      data['total'],
     );
   }
 }
