@@ -7,6 +7,7 @@ import 'Total.dart';
 
 void main() => runApp(MyApp(
       products: fetchProducts(),
+      total: fetchTotal(),
     ));
 
 List<Product> parseProducts(String responseBody) {
@@ -26,7 +27,8 @@ Future<List<Product>> fetchProducts() async {
 
 class MyApp extends StatelessWidget {
   final Future<List<Product>> products;
-  MyApp({Key key, this.products}) : super(key: key);
+  final Future<List<Total>> total;
+  MyApp({Key key, this.products, this.total}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -39,6 +41,7 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(
         title: 'Product Navigation demo home page',
         products: products,
+        total: total,
       ),
     );
   }
@@ -72,7 +75,11 @@ class MyHomePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => TotalPage()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TotalPage(
+                        total: total,
+                      )));
         },
         child: Icon(Icons.navigation),
         backgroundColor: Colors.green,
@@ -190,7 +197,6 @@ class TotalPage extends StatelessWidget {
 
   TotalPage({Key key, this.title, this.total}) : super(key: key);
 
-  // final items = Product.getProducts();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,12 +206,59 @@ class TotalPage extends StatelessWidget {
           future: total,
           builder: (context, snapshot) {
             if (snapshot.hasError) print(snapshot.error);
+            print(snapshot.data);
             return snapshot.hasData
-                ? Text(snapshot.data.toString())
-                : Text("Loading");
+                ? TotalBoxList(items: snapshot.data)
+
+                // return the ListView widget :
+                : Center(child: CircularProgressIndicator());
           },
         ),
       ),
     );
+  }
+}
+
+class TotalBoxList extends StatelessWidget {
+  final List<Total> items;
+  TotalBoxList({Key key, this.items});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          child: TotalDisplay(item: items[index]),
+        );
+      },
+    );
+  }
+}
+
+class TotalDisplay extends StatelessWidget {
+  TotalDisplay({Key key, this.item}) : super(key: key);
+  final Total item;
+
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(2),
+        height: 140,
+        child: Card(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                    child: Container(
+                        padding: EdgeInsets.all(5),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text(this.item.total.toString(),
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ],
+                        )))
+              ]),
+        ));
   }
 }
