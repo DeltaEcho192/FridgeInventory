@@ -2,3 +2,8 @@ Dockerize and kubernettes
 Add functionallity for weighed items
 Make sure user is logged in
 Add userid to products database to reduce chaos
+
+Mobile App
+Expand on the api calls for total include more stats (Turn python into django api.. Test on http-server)
+Add Google vision api
+Add Firebase Auth
