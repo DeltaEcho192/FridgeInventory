@@ -8,7 +8,7 @@
         "start": "node node.js"
     },
     "dependencies": {
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "package.json": "^2.0.1",
         "request": "^2.88.2",
         "cors": "^2.8.5",
